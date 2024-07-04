@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
+import './App.css'; // Importa el archivo CSS
 
 function App() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const apiUrl = `${API_URL }assets`;
+        const apiUrl = `${import.meta.env.VITE_API_URL}assets`;
         console.log("Fetching data from:", apiUrl);
 
         const response = await fetch(apiUrl);
@@ -35,19 +34,29 @@ function App() {
   }, []);
 
   return (
-    <>
-      <h1>Lista de criptomonedas</h1>
-      {error && <p>Error: {error}</p>}
+    <div className="container">
+      <h1 className="title">Lista de criptomonedas</h1>
+      {error && <p className="error">Error: {error}</p>}
       {data ? (
-        <ul>
+        <div className="cards">
           {data.map((crypto) => (
-            <li key={crypto.id}>Nombre es: <b>{crypto.name}</b></li>
+            <div key={crypto.id} className="card">
+              <h2>{crypto.name} ({crypto.symbol})</h2>
+              <p>Rank: {crypto.rank}</p>
+              <p>Supply: {parseFloat(crypto.supply).toLocaleString()}</p>
+              <p>Max Supply: {parseFloat(crypto.maxSupply).toLocaleString()}</p>
+              <p>Market Cap: ${parseFloat(crypto.marketCapUsd).toLocaleString()}</p>
+              <p>Volume (24Hr): ${parseFloat(crypto.volumeUsd24Hr).toLocaleString()}</p>
+              <p>Price: ${parseFloat(crypto.priceUsd).toFixed(2)}</p>
+              <p>Change (24Hr): {parseFloat(crypto.changePercent24Hr).toFixed(2)}%</p>
+              <p>VWAP (24Hr): ${parseFloat(crypto.vwap24Hr).toFixed(2)}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>Cargando datos...</p>
       )}
-    </>
+    </div>
   );
 }
 
